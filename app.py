@@ -48,17 +48,17 @@ if año_seleccionado != "Todos los años" and año_seleccionado > min(anios):
 
 # Diagnósticos más frecuentes
 st.subheader("🧾 Top 10 Diagnósticos Más Comunes")
-top_diag = df_anio['INCAPACIDAD - DIAGNÓSTICO'].value_counts().head(10)
+top_diag = df_anio['INCAPACIDAD - TIPO DE GENERACIÓN'].value_counts().head(10)
 st.bar_chart(top_diag)
 
 # Diagnósticos con más días acumulados
 st.subheader("📅 Diagnósticos con más días acumulados")
-top_dias_diag = df_anio.groupby('INCAPACIDAD - DIAGNÓSTICO')['INCAPACIDAD - DIAS'].sum().sort_values(ascending=False).head(10)
+top_dias_diag = df_anio.groupby('INCAPACIDAD - TIPO DE GENERACIÓN')['INCAPACIDAD - DIAS'].sum().sort_values(ascending=False).head(10)
 st.bar_chart(top_dias_diag)
 
 # Diagnósticos con mayor impacto económico
 st.subheader("💰 Diagnósticos con mayor costo acumulado")
-top_cost_diag = df_anio.groupby('INCAPACIDAD - DIAGNÓSTICO')['COSTO INCAPACIDAD'].sum().sort_values(ascending=False).head(10)
+top_cost_diag = df_anio.groupby('INCAPACIDAD - TIPO DE GENERACIÓN')['COSTO INCAPACIDAD'].sum().sort_values(ascending=False).head(10)
 st.bar_chart(top_cost_diag)
 
 # Alertas más frecuentes
