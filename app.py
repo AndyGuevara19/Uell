@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -35,10 +36,30 @@ with col2:
     costo_total = df_anio['COSTO INCAPACIDAD'].sum()
     st.metric("💸 Costo total estimado", f"${costo_total:,.0f}")
 
+# Comparativa entre años
+if año_seleccionado != "Todos los años" and año_seleccionado > min(anios):
+    prev_year = año_seleccionado - 1
+    if prev_year in anios:
+        df_prev = df[df['AÑO'] == prev_year]
+        dias_prev = df_prev.groupby('C.C COLABORADOR')['INCAPACIDAD - DIAS'].sum().mean()
+        costo_prev = df_prev['COSTO INCAPACIDAD'].sum()
+        col1.metric("🔁 Comparado con año anterior (días)", f"{dias_prom - dias_prev:.2f}", delta=f"{dias_prom - dias_prev:.2f}")
+        col2.metric("🔁 Comparado con año anterior (costo)", f"${costo_total - costo_prev:,.0f}", delta=f"${costo_total - costo_prev:,.0f}")
+
 # Diagnósticos más frecuentes
 st.subheader("🧾 Top 10 Diagnósticos Más Comunes")
-top_diag = df_anio['INCAPACIDAD - TIPO DE GENERACIÓN'].value_counts().head(10)
+top_diag = df_anio['INCAPACIDAD - DIAGNÓSTICO'].value_counts().head(10)
 st.bar_chart(top_diag)
+
+# Diagnósticos con más días acumulados
+st.subheader("📅 Diagnósticos con más días acumulados")
+top_dias_diag = df_anio.groupby('INCAPACIDAD - DIAGNÓSTICO')['INCAPACIDAD - DIAS'].sum().sort_values(ascending=False).head(10)
+st.bar_chart(top_dias_diag)
+
+# Diagnósticos con mayor impacto económico
+st.subheader("💰 Diagnósticos con mayor costo acumulado")
+top_cost_diag = df_anio.groupby('INCAPACIDAD - DIAGNÓSTICO')['COSTO INCAPACIDAD'].sum().sort_values(ascending=False).head(10)
+st.bar_chart(top_cost_diag)
 
 # Alertas más frecuentes
 st.subheader("🚨 Alertas más frecuentes")
@@ -50,5 +71,10 @@ st.bar_chart(alerta_totales)
 st.subheader("👥 Top 10 colaboradores con más incapacidades")
 top_colabs = df_anio['C.C COLABORADOR'].value_counts().head(10).rename_axis('Colaborador').reset_index(name='Nº Incapacidades')
 st.dataframe(top_colabs)
+
+# Exportar datos filtrados
+st.subheader("📥 Exportar datos filtrados")
+csv = df_anio.to_csv(index=False).encode('utf-8')
+st.download_button("Descargar CSV", data=csv, file_name="datos_filtrados.csv", mime="text/csv")
 
 st.caption("Desarrollado como parte de una prueba técnica para Uell. © 2024")
