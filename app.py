@@ -5,6 +5,23 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Dashboard de Ausentismo", layout="wide")
+st.markdown(
+    """
+    <style>
+        .main {
+            background-color: #f4f4f4;
+        }
+        .stApp {
+            background-color: #f4f4f4;
+        }
+        .block-container {
+            padding: 2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("📊 Dashboard de Ausentismo Laboral")
 
 # Cargar datos limpios
