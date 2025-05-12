@@ -18,8 +18,13 @@ df = cargar_datos()
 
 # Filtro por año
 anios = sorted(df['AÑO'].dropna().unique())
-año = st.sidebar.selectbox("Selecciona un año", anios)
-df_anio = df[df['AÑO'] == año]
+opciones_anio = ["Todos los años"] + list(anios)
+año_seleccionado = st.sidebar.selectbox("Selecciona un año", opciones_anio)
+
+if año_seleccionado == "Todos los años":
+    df_anio = df.copy()
+else:
+    df_anio = df[df['AÑO'] == año_seleccionado]
 
 # Indicadores
 col1, col2 = st.columns(2)
@@ -32,7 +37,7 @@ with col2:
 
 # Diagnósticos más frecuentes
 st.subheader("🧾 Top 10 Diagnósticos Más Comunes")
-top_diag = df_anio['INCAPACIDAD - DIAGNÓSTICO'].value_counts().head(10)
+top_diag = df_anio['INCAPACIDAD - TIPO DE GENERACIÓN'].value_counts().head(10)
 st.bar_chart(top_diag)
 
 # Alertas más frecuentes
